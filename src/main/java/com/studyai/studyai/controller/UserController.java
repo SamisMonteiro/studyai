@@ -1,6 +1,8 @@
 package com.studyai.studyai.controller;
 
+import com.studyai.studyai.dto.UserResponseDTO;
 import com.studyai.studyai.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import com.studyai.studyai.entity.User;
 
@@ -18,12 +20,12 @@ public class UserController {
     }
 
     @PostMapping
-    public User salvarUsuario(@RequestBody User user) {
+    public User salvarUsuario(@Valid @RequestBody User user) {
         return userService.salvarUsuario(user);
     }
 
     @GetMapping
-    public List<User> listarUsuarios() {
+    public List<UserResponseDTO> listarUsuarios() {
         return userService.listarUsuarios();
     }
 
@@ -34,6 +36,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deletarUsuario(@PathVariable Long id) {
         userService.deletarUsuario(id);
+    }
+    @PutMapping("/{id}")
+    public User atualizarUsuario(@PathVariable Long id, @Valid @RequestBody User userAtualizado) {
+        return userService.atualizarUsuario(id, userAtualizado);
+
     }
 
 }
