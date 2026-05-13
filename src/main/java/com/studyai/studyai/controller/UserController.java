@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User salvarUsuario(@Valid @RequestBody User user) {
+    public UserResponseDTO salvarUsuario(@Valid @RequestBody User user) {
         return userService.salvarUsuario(user);
     }
 
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User buscarPorId(@PathVariable Long id) {
+    public UserResponseDTO buscarPorId(@PathVariable Long id) {
         return userService.buscarPorId(id);
     }
     @DeleteMapping("/{id}")
@@ -38,7 +38,7 @@ public class UserController {
         userService.deletarUsuario(id);
     }
     @PutMapping("/{id}")
-    public User atualizarUsuario(@PathVariable Long id, @Valid @RequestBody User userAtualizado) {
+    public UserResponseDTO atualizarUsuario(@PathVariable Long id, @Valid @RequestBody User userAtualizado) {
         return userService.atualizarUsuario(id, userAtualizado);
 
     }

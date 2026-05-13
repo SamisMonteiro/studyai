@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.studyai.studyai.entity.User;
 
 import java.util.List;
-
+import com.studyai.studyai.exception.ResourceNotFoundException;
 import com.studyai.studyai.dto.UserResponseDTO;
 
 @Service
@@ -16,31 +16,42 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User salvarUsuario(User user) {
-        return userRepository.save(user);
+    public UserResponseDTO salvarUsuario(User user) {
+        User usuarioSalvo = userRepository.save(user);
+        return converterParaDTO(usuarioSalvo);
     }
 
     public List<UserResponseDTO> listarUsuarios() {
         return userRepository.findAll().stream().map(this::converterParaDTO).toList();
     }
 
-    public User buscarPorId(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public UserResponseDTO buscarPorId(Long id) {
+        User user = buscarUsuarioEntity(id);
+        return converterParaDTO(user);
     }
 
     public void deletarUsuario(Long id) {
         userRepository.deleteById(id);
     }
 
-    public User atualizarUsuario(Long id, User userAtualizado) {
-        User usuarioExistente = buscarPorId(id);
+    public UserResponseDTO atualizarUsuario(Long id, User userAtualizado) {
+
+        User usuarioExistente = buscarUsuarioEntity(id);
+
         usuarioExistente.setNome(userAtualizado.getNome());
         usuarioExistente.setEmail(userAtualizado.getEmail());
         usuarioExistente.setCpf(userAtualizado.getCpf());
         usuarioExistente.setSenha(userAtualizado.getSenha());
-        return userRepository.save(usuarioExistente);
+
+        User usuarioAtualizadoSalvo = userRepository.save(usuarioExistente);
+
+        return converterParaDTO(usuarioAtualizadoSalvo);
 
     }
+    private User buscarUsuarioEntity(Long id){
+        return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Usuario não encontrado"));
+    }
+
 
     private UserResponseDTO converterParaDTO(User user) {
         UserResponseDTO dto = new UserResponseDTO();
@@ -50,4 +61,6 @@ public class UserService {
         dto.setCpf(user.getCpf());
         return dto;
     }
+
+
 }
