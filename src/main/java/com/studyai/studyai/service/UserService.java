@@ -3,7 +3,7 @@ package com.studyai.studyai.service;
 import com.studyai.studyai.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import com.studyai.studyai.entity.User;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import com.studyai.studyai.exception.ResourceNotFoundException;
 import com.studyai.studyai.dto.UserResponseDTO;
@@ -11,12 +11,16 @@ import com.studyai.studyai.dto.UserResponseDTO;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponseDTO salvarUsuario(User user) {
+        user.setSenha(passwordEncoder.encode(user.getSenha()));
         User usuarioSalvo = userRepository.save(user);
         return converterParaDTO(usuarioSalvo);
     }
@@ -41,7 +45,9 @@ public class UserService {
         usuarioExistente.setNome(userAtualizado.getNome());
         usuarioExistente.setEmail(userAtualizado.getEmail());
         usuarioExistente.setCpf(userAtualizado.getCpf());
-        usuarioExistente.setSenha(userAtualizado.getSenha());
+        usuarioExistente.setSenha(
+                passwordEncoder.encode(userAtualizado.getSenha())
+        );
 
         User usuarioAtualizadoSalvo = userRepository.save(usuarioExistente);
 
