@@ -5,7 +5,8 @@ import com.studyai.studyai.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import com.studyai.studyai.entity.User;
-
+import com.studyai.studyai.dto.LoginRequestDTO;
+import com.studyai.studyai.dto.LoginResponseDTO;
 import java.util.List;
 
 
@@ -22,6 +23,11 @@ public class UserController {
     @PostMapping
     public UserResponseDTO salvarUsuario(@Valid @RequestBody User user) {
         return userService.salvarUsuario(user);
+    }
+
+    @PostMapping("/login")
+    public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequest) {
+        return userService.login(loginRequest);
     }
 
     @GetMapping

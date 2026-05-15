@@ -1,5 +1,8 @@
 package com.studyai.studyai.service;
 
+import com.studyai.studyai.dto.LoginRequestDTO;
+import com.studyai.studyai.dto.LoginResponseDTO;
+import com.studyai.studyai.exception.BusinessException;
 import com.studyai.studyai.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import com.studyai.studyai.entity.User;
@@ -20,8 +23,13 @@ public class UserService {
     }
 
     public UserResponseDTO salvarUsuario(User user) {
+        if (userRepository.findByCpf(user.getCpf()).isPresent()) {
+            throw new BusinessException("CPF já cadastrado");
+        }
+
         user.setSenha(passwordEncoder.encode(user.getSenha()));
         User usuarioSalvo = userRepository.save(user);
+
         return converterParaDTO(usuarioSalvo);
     }
 
@@ -67,6 +75,20 @@ public class UserService {
         dto.setCpf(user.getCpf());
         return dto;
     }
+    public LoginResponseDTO login(LoginRequestDTO loginRequest){
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new BusinessException("Email ou senha inválidos"));
+        boolean senhaCorreta = passwordEncoder.matches(
+                loginRequest.getSenha(),
+                user.getSenha()
+        );
+        if (!senhaCorreta){
+            throw new BusinessException("Email ou senha inválidos");
+        }
+        LoginResponseDTO response = new LoginResponseDTO();
+        response.setMensagem("Login realizado com sucesso");
 
+        return response;
+    }
 
 }
