@@ -1,10 +1,12 @@
 package com.studyai.studyai.dto;
 
 public class LoginResponseDTO {
+
     private String mensagem;
 
-    public LoginResponseDTO(){
+    private String token;
 
+    public LoginResponseDTO(){
     }
 
     public String getMensagem() {
@@ -13,5 +15,13 @@ public class LoginResponseDTO {
 
     public void setMensagem(String mensagem) {
         this.mensagem = mensagem;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

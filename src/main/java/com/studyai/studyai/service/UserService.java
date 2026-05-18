@@ -10,16 +10,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import com.studyai.studyai.exception.ResourceNotFoundException;
 import com.studyai.studyai.dto.UserResponseDTO;
+import com.studyai.studyai.security.JwtService;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UserService(UserRepository userRepository,
-                       BCryptPasswordEncoder passwordEncoder) {
+                       BCryptPasswordEncoder passwordEncoder,
+                       JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public UserResponseDTO salvarUsuario(User user) {
@@ -85,8 +89,11 @@ public class UserService {
         if (!senhaCorreta){
             throw new BusinessException("Email ou senha inválidos");
         }
+        String token = jwtService.gerarToken(user.getEmail());
+
         LoginResponseDTO response = new LoginResponseDTO();
         response.setMensagem("Login realizado com sucesso");
+        response.setToken(token);
 
         return response;
     }
