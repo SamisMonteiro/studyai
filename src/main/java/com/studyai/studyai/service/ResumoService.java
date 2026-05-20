@@ -8,6 +8,7 @@ import com.studyai.studyai.entity.Resumo;
 import com.studyai.studyai.repository.ResumoRepository;
 import java.time.LocalDateTime;
 import com.studyai.studyai.dto.ResumoHistoricoDTO;
+import com.studyai.studyai.exception.ResourceNotFoundException;
 
 
 @Service
@@ -45,6 +46,16 @@ public class ResumoService {
                 .stream()
                 .map(this::converterParaHistoricoDTO)
                 .toList();
+    }
+    public ResumoHistoricoDTO buscarPorId(Long id) {
+        Resumo resumo = resumoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Resumo não encontrado"));
+        return converterParaHistoricoDTO(resumo);
+    }
+    public void deletarResumo(Long id) {
+        Resumo resumo = resumoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Resumo não encontrado"));
+        resumoRepository.delete(resumo);
     }
 
     private ResumoHistoricoDTO converterParaHistoricoDTO(Resumo resumo) {
