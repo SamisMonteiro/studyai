@@ -3,10 +3,14 @@ package com.studyai.studyai.service;
 import com.studyai.studyai.dto.ResumoRequestDTO;
 import com.studyai.studyai.dto.ResumoResponseDTO;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+
 import com.studyai.studyai.entity.Resumo;
 import com.studyai.studyai.repository.ResumoRepository;
+
 import java.time.LocalDateTime;
+
 import com.studyai.studyai.dto.ResumoHistoricoDTO;
 import com.studyai.studyai.exception.ResourceNotFoundException;
 
@@ -41,17 +45,20 @@ public class ResumoService {
 
         return response;
     }
+
     public List<ResumoHistoricoDTO> listarHistorico() {
         return resumoRepository.findAll()
                 .stream()
                 .map(this::converterParaHistoricoDTO)
                 .toList();
     }
+
     public ResumoHistoricoDTO buscarPorId(Long id) {
         Resumo resumo = resumoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Resumo não encontrado"));
         return converterParaHistoricoDTO(resumo);
     }
+
     public void deletarResumo(Long id) {
         Resumo resumo = resumoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Resumo não encontrado"));
@@ -69,6 +76,10 @@ public class ResumoService {
         return dto;
     }
 
+    // TODO:
+    // - substituir mock por IA real
+    // - adicionar exportação em PDF
+    // - permitir geração de resumo por link
     private String gerarResumoMockado(String texto) {
         String textoLimpo = texto.trim();
         if (textoLimpo.length() <= 120) {
@@ -77,6 +88,9 @@ public class ResumoService {
         String trechoInicial = textoLimpo.substring(0, 120);
         return "Resumo: " + trechoInicial + "...";
     }
+
+    // TODO: futuramente as perguntas serão geradas
+    // dinamicamente por um modelo de IA
     private List<String> gerarPerguntasMockadas(String titulo, String texto) {
 
         String textoMinusculo = texto.toLowerCase();
@@ -121,7 +135,6 @@ public class ResumoService {
                 "Como esse conteúdo pode ser aplicado na prática?"
         );
     }
-
 
 
 }
